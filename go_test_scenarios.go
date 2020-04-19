@@ -16,6 +16,10 @@ func (g GoTestScenarioRunner) Name() string {
 	return "go test"
 }
 
+func (g GoTestScenarioRunner) Description() string {
+	return "Vanilla go test"
+}
+
 func (g GoTestScenarioRunner) RunTest(testPath string) TestRun {
 	cmd := exec.Command("go", "test")
 	cmd.Dir = testPath
@@ -37,6 +41,10 @@ func (g GoTestCompileScenarioRunner) Cleanup() {}
 
 func (g GoTestCompileScenarioRunner) Name() string {
 	return "go test compile"
+}
+
+func (g GoTestCompileScenarioRunner) Description() string {
+	return "go test -c, followed by invoking the resulting binary"
 }
 
 func (g GoTestCompileScenarioRunner) RunTest(testPath string) TestRun {

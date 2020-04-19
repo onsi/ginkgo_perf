@@ -16,12 +16,14 @@ type TestRun struct {
 type TestRuns []TestRun
 
 type Scenario struct {
-	Name     string   `json:"name"`
-	TestRuns TestRuns `json:"test_runs"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	TestRuns    TestRuns `json:"test_runs"`
 }
 
 type ScenarioRunner interface {
 	Name() string
+	Description() string
 	RunTest(testPath string) TestRun
 	Prep()
 	Cleanup()
@@ -32,30 +34,22 @@ const NUM_RUNS = 30
 var ScenarioRunners = []ScenarioRunner{
 	GoTestScenarioRunner{},
 	GoTestCompileScenarioRunner{},
-	GinkgoTestScenarioRunner{CLI: "ginkgo_cli_base"},
+	GinkgoTestScenarioRunner{"ginkgo_cli_base", "Original Ginkgo CLI"},
+	GinkgoTestScenarioRunner{"ginkgo_cli_run", "Ginkgo CLI that calls cmd.Run() instead of cmd.Start() then cmd.Wait()"},
 }
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "run" {
-		force := false
-		fmt.Println("Running Scenarios")
-		if len(os.Args) > 2 && os.Args[2] == "force" {
-			fmt.Println("Forcing Rerun")
-			force = true
-		}
-
-		runScenarios(force)
+	force := false
+	fmt.Println("Running Scenarios")
+	if len(os.Args) > 1 && os.Args[1] == "force" {
+		fmt.Println("Forcing Rerun")
+		force = true
 	}
-
-	scenarios := []Scenario{}
-
-	f, _ := os.Open("scenarios.json")
-	json.NewDecoder(f).Decode(&scenarios)
-
-	analyzeScenarios(scenarios)
+	runScenarios(force)
+	analyzeScenarios()
 }
 
-func analyzeScenarios(scenarios []Scenario) {
+func analyzeScenarios() {
 	wd, _ := os.Getwd()
 	testRunPath := filepath.Join(wd, "test_runs")
 
@@ -77,6 +71,7 @@ func analyzeScenarios(scenarios []Scenario) {
 
 func analyzeScenario(scenario Scenario) {
 	fmt.Println(scenario.Name)
+	fmt.Println(scenario.Description)
 	for i, testRun := range scenario.TestRuns {
 		fmt.Printf("  # %3d | C: %7.4fs R: %7.4fs T: %7.4fs\n", i+1, testRun.CompileTime, testRun.RunTime, testRun.TotalTime)
 	}
@@ -89,6 +84,7 @@ func runScenarios(force bool) {
 
 	for _, scenarioRunner := range ScenarioRunners {
 		name := scenarioRunner.Name()
+		description := scenarioRunner.Description()
 		jsonPath := filepath.Join(testRunPath, name+".json")
 
 		if !force {
@@ -100,7 +96,8 @@ func runScenarios(force bool) {
 		}
 
 		scenario := Scenario{
-			Name: name,
+			Name:        name,
+			Description: description,
 		}
 		fmt.Println("Running", name)
 		scenarioRunner.Prep()

@@ -12,7 +12,8 @@ var COMPILED_RE = regexp.MustCompile(`Ω COMPILED IN ([\d\.]+)`)
 var RAN_RE = regexp.MustCompile(`Ω RAN IN ([\d\.]+)`)
 
 type GinkgoTestScenarioRunner struct {
-	CLI string
+	CLI  string
+	Desc string
 }
 
 func (g GinkgoTestScenarioRunner) Prep() {
@@ -21,7 +22,6 @@ func (g GinkgoTestScenarioRunner) Prep() {
 	if err != nil {
 		panic(err)
 	}
-
 }
 
 func (g GinkgoTestScenarioRunner) Cleanup() {
@@ -30,6 +30,10 @@ func (g GinkgoTestScenarioRunner) Cleanup() {
 
 func (g GinkgoTestScenarioRunner) Name() string {
 	return "ginkgo " + g.CLI
+}
+
+func (g GinkgoTestScenarioRunner) Description() string {
+	return g.Desc
 }
 
 func (g GinkgoTestScenarioRunner) RunTest(testPath string) TestRun {
