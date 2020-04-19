@@ -3,7 +3,7 @@ package sample_test
 import (
 	"fmt"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo_perf/ginkgo"
 	. "github.com/onsi/gomega"
 
 	. "github.com/onsi/ginkgo_perf/sample"
