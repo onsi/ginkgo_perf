@@ -127,7 +127,7 @@ func (r *SuiteRunner) RunSuites(runners []*testrunner.TestRunner, numCompilers i
 		if compilationOutput.err != nil {
 			fmt.Print(compilationOutput.err.Error())
 		}
-		fmt.Println("COMPILED IN", time.Since(tDebug).Seconds())
+		fmt.Println("Ω COMPILED IN", time.Since(tDebug).Seconds())
 		tDebug = time.Now()
 
 		numSuitesThatRan++
@@ -135,7 +135,7 @@ func (r *SuiteRunner) RunSuites(runners []*testrunner.TestRunner, numCompilers i
 		if compilationOutput.err == nil {
 			suiteRunResult = compilationOutput.runner.Run()
 		}
-		fmt.Println("RAN IN", time.Since(tDebug).Seconds())
+		fmt.Println("Ω RAN IN", time.Since(tDebug).Seconds())
 
 		r.notifier.SendSuiteCompletionNotification(compilationOutput.runner.Suite, suiteRunResult.Passed)
 		r.notifier.RunCommand(compilationOutput.runner.Suite, suiteRunResult.Passed)
