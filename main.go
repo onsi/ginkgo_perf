@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/montanaflynn/stats"
 )
 
 type TestRun struct {
@@ -36,6 +38,7 @@ var ScenarioRunners = []ScenarioRunner{
 	GoTestCompileScenarioRunner{},
 	GinkgoTestScenarioRunner{"ginkgo_cli_base", "Original Ginkgo CLI"},
 	GinkgoTestScenarioRunner{"ginkgo_cli_run", "Ginkgo CLI that calls cmd.Run() instead of cmd.Start() then cmd.Wait()"},
+	GinkgoTestScenarioRunner{"ginkgo_cli_no_tmp", "Ginkgo CLI that compiles tests into the current package, not a tempdir"},
 }
 
 func main() {
@@ -72,9 +75,37 @@ func analyzeScenarios() {
 func analyzeScenario(scenario Scenario) {
 	fmt.Println(scenario.Name)
 	fmt.Println(scenario.Description)
-	for i, testRun := range scenario.TestRuns {
-		fmt.Printf("  # %3d | C: %7.4fs R: %7.4fs T: %7.4fs\n", i+1, testRun.CompileTime, testRun.RunTime, testRun.TotalTime)
+	compileTime := stats.Float64Data{}
+	runTime := stats.Float64Data{}
+	totalTime := stats.Float64Data{}
+	for _, testRun := range scenario.TestRuns {
+		compileTime = append(compileTime, testRun.CompileTime)
+		runTime = append(runTime, testRun.RunTime)
+		totalTime = append(totalTime, testRun.TotalTime)
+		// fmt.Printf("  # %3d | C: %7.4fs R: %7.4fs T: %7.4fs\n", i+1, testRun.CompileTime, testRun.RunTime, testRun.TotalTime)
 	}
+
+	compileTimeMin, _ := compileTime.Min()
+	compileTimeMean, _ := compileTime.Mean()
+	compileTimeMedian, _ := compileTime.Median()
+	compileTimeMax, _ := compileTime.Max()
+	compileTimeStandardDeviation, _ := compileTime.StandardDeviation()
+
+	runTimeMin, _ := runTime.Min()
+	runTimeMean, _ := runTime.Mean()
+	runTimeMedian, _ := runTime.Median()
+	runTimeMax, _ := runTime.Max()
+	runTimeStandardDeviation, _ := runTime.StandardDeviation()
+
+	totalTimeMin, _ := totalTime.Min()
+	totalTimeMean, _ := totalTime.Mean()
+	totalTimeMedian, _ := totalTime.Median()
+	totalTimeMax, _ := totalTime.Max()
+	totalTimeStandardDeviation, _ := totalTime.StandardDeviation()
+
+	fmt.Printf("    Compile Time: %6.4fs < <%6.4fs> [%6.4fs] ± %6.4fs < %6.4f\n", compileTimeMin, compileTimeMean, compileTimeMedian, compileTimeStandardDeviation, compileTimeMax)
+	fmt.Printf("    Run Time: %6.4fs < <%6.4fs> [%6.4fs] ± %6.4fs < %6.4f\n", runTimeMin, runTimeMean, runTimeMedian, runTimeStandardDeviation, runTimeMax)
+	fmt.Printf("    Total Time: %6.4fs < <%6.4fs> [%6.4fs] ± %6.4fs < %6.4f\n", totalTimeMin, totalTimeMean, totalTimeMedian, totalTimeStandardDeviation, totalTimeMax)
 }
 
 func runScenarios(force bool) {
