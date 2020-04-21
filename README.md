@@ -50,3 +50,11 @@ And here's the plot:
 - `ginkgo_cli_base` - i.e. the default ginkgo behavior that compiles the test into a tmp directory - sees notable latency in the Run Time - of about 500ms on average with a wide variance.
 
 So.  Apparently.  Don't try to run binaries from a temp directory (at least on MacOS) as that introduces latency with a long-tail distribution (see the plot).
+
+### Applying this to the Abacus issue
+
+This performance exploration started - in part - due to [this issue](https://github.com/onsi/ginkgo/issues/644).  On my laptop vanilla ginkgo takes ~4.1s but the no-temp-dir flavor of ginkgo takes ~3.3s.
+
+### Applying this to `ginkgo`
+
+Running ginkgo's unit tests shows a reduction in run time from ~16.3s to ~12.7s.
