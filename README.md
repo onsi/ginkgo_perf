@@ -40,3 +40,13 @@ For each scenario (where possible) we capture the Compile Time, Run Time, and To
 
 
 And here's the plot:
+
+![timings plot](https://github.com/onsi/ginkgo_perf/blob/master/timings.png)
+
+### What it means:
+
+- `go test` is 100ms faster than `go test compile`
+- `ginkgo_cli_no_tmp` is equivalent to `go test compile`
+- `ginkgo_cli_base` - i.e. the default ginkgo behavior that compiles the test into a tmp directory - sees notable latency in the Run Time - of about 500ms on average with a wide variance.
+
+So.  Apparently.  Don't try to run binaries from a temp directory (at least on MacOS) as that introduces latency with a long-tail distribution (see the plot).
