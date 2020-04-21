@@ -56,7 +56,7 @@ func (g GoTestCompileScenarioRunner) RunTest(testPath string) TestRun {
 	cmd.Run()
 	dtCompile := time.Since(tCompile).Seconds()
 
-	cmd = exec.Command("test")
+	cmd = exec.Command("./test")
 	cmd.Dir = testPath
 	tRun := time.Now()
 	cmd.Run()

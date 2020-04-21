@@ -31,13 +31,12 @@ type ScenarioRunner interface {
 	Cleanup()
 }
 
-const NUM_RUNS = 30
+const NUM_RUNS = 100
 
 var ScenarioRunners = []ScenarioRunner{
 	GoTestScenarioRunner{},
 	GoTestCompileScenarioRunner{},
 	GinkgoTestScenarioRunner{"ginkgo_cli_base", "Original Ginkgo CLI"},
-	GinkgoTestScenarioRunner{"ginkgo_cli_run", "Ginkgo CLI that calls cmd.Run() instead of cmd.Start() then cmd.Wait()"},
 	GinkgoTestScenarioRunner{"ginkgo_cli_no_tmp", "Ginkgo CLI that compiles tests into the current package, not a tempdir"},
 }
 

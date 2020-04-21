@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import subprocess
 import json
 
-SCENARIOS = ["go test", "go test compile", "ginkgo ginkgo_cli_base", "ginkgo ginkgo_cli_run", "ginkgo ginkgo_cli_no_tmp"]
-COLORS = {"go test": "#aaaaff", "go test compile": "#0000ff", "ginkgo ginkgo_cli_base": "#ff0000", "ginkgo ginkgo_cli_run": "#ffaaaa", "ginkgo ginkgo_cli_no_tmp": "#00aa00"}
+SCENARIOS = ["go test", "go test compile", "ginkgo ginkgo_cli_base", "ginkgo ginkgo_cli_no_tmp"]
+COLORS = {"go test": "#aaaaff", "go test compile": "#0000ff", "ginkgo ginkgo_cli_base": "#ff0000", "ginkgo ginkgo_cli_no_tmp": "#00aa00"}
 
 
 plt.ioff()
